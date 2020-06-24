@@ -5,16 +5,16 @@ Repro for https://github.com/servo/servo/issues/27043
 (appologies for the weird repro steps)
 
 1. Be running on Windows 10.
-2. [Clone and build the servo repo](https://github.com/servo/servo).
-    -   You can probably skip this step if you already have a OpenSSL installed on your system.
-    -   If you have OpenSSL installed and you cannot reproduce the issue, then go back and do this step to help confirm that it is a versioning issue.
-3. Ensure you have the [rust toolchain installed](https://rustup.rs/).
-4. Set the `OPENSSL_DIR` environment variable to the OpenSSL install directory created by the servo build.
-    -   Use the UWP version.
-    -   This will be in the servo repo directory under `.servo/msvc-dependencies/openssl/{version}/x64-windows-uwp`.
-5. Run `cargo build`
-6. Copy `libssl.dll` and `libcrypto.dll` to the output directory (`./target/debug`).
-7. Run `cargo run`.
+2. Ensure you have the [rust toolchain installed](https://rustup.rs/).
+3. Ensure [vcpkg](https://github.com/Microsoft/vcpkg) is intalled.
+4. Add vcpkg to the path environment variable.
+5. [Integrate vcpkg](https://github.com/microsoft/vcpkg/blob/master/docs/users/integration.md)
+    -   Run this from a terminal with admin privileges.
+6. Install openssl for 64 bit Windows
+    -   `vcpkg install openssl --triplet x64-windows`
+7. Set the `VCPKGRS_DYNAMIC` environment variable to `1`.
+    -   This tells the openssl crate to dynamically link the OpenSSL binaries.
+8. Run `cargo run`.
 
 It will prompt for which URL to use. One is a normal insecure websocket (`ws`) and the other is secure (`wss`).
 

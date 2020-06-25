@@ -1,4 +1,4 @@
-Repro for https://github.com/servo/servo/issues/27043
+Repro for https://github.com/servo/servo/issues/27043 and https://github.com/housleyjk/ws-rs/issues/51
 
 ### Steps
 
@@ -11,9 +11,7 @@ Repro for https://github.com/servo/servo/issues/27043
 5. [Integrate vcpkg](https://github.com/microsoft/vcpkg/blob/master/docs/users/integration.md)
     -   Run this from a terminal with admin privileges.
 6. Install openssl for 64 bit Windows
-    -   `vcpkg install openssl --triplet x64-windows`
-7. Set the `VCPKGRS_DYNAMIC` environment variable to `1`.
-    -   This tells the openssl crate to dynamically link the OpenSSL binaries.
+    -   `vcpkg install openssl --triplet x64-windows-static-md`
 8. Run `cargo run`.
 
 It will prompt for which URL to use. One is a normal insecure websocket (`ws`) and the other is secure (`wss`).
@@ -22,3 +20,11 @@ For option `0`, a connection with the server will be established and any message
 
 For option `1`, a connection will be attempted but will fail for some reason.
 From what I can tell from wireshark, no packets are sent when connecting over `wss` while over `ws` the connection will be established correctly.
+
+When building the `ws` crate with `features = ["nativetls"]`, it fails with a different message:
+
+```
+thread 'main' panicked at 'Tried to access actively upgrading TlsStream', E:\.cargo\registry\src\github.com-1ecc6299db9ec823\ws-0.9.1\src\stream.rs:325:37
+```
+
+The above seems related to [this issue](https://github.com/housleyjk/ws-rs/issues/226).

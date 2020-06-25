@@ -20,11 +20,3 @@ For option `0`, a connection with the server will be established and any message
 
 For option `1`, a connection will be attempted but will fail for some reason.
 From what I can tell from wireshark, no packets are sent when connecting over `wss` while over `ws` the connection will be established correctly.
-
-When building the `ws` crate with `features = ["nativetls"]`, it fails with a different message:
-
-```
-thread 'main' panicked at 'Tried to access actively upgrading TlsStream', E:\.cargo\registry\src\github.com-1ecc6299db9ec823\ws-0.9.1\src\stream.rs:325:37
-```
-
-The above seems related to [this issue](https://github.com/housleyjk/ws-rs/issues/226).
